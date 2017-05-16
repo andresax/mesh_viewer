@@ -1,9 +1,3 @@
-/*
- * ShaderManager.cpp
- *
- *  Created on: 13/giu/2014
- *      Author: andrea
- */
 
 #include <fstream>
 

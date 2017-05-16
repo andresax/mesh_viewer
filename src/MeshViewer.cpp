@@ -1,4 +1,4 @@
-#include <KittiViewer.h>
+#include <MeshViewer.h>
 #include <utilities.hpp>
 #include <ReprojectionShaderProgram.h>
 #include <DepthShaderProgram.h>
@@ -10,7 +10,7 @@
 #include <glm.hpp>
 
 
-KittiViewer::KittiViewer( std::string namecam) {
+MeshViewer::MeshViewer( std::string namecam) {
  namecam_ = namecam;
   //mesh_.loadFormat("/home/andrea/workspaceC/incremental_dense_reconstruction/Results/Incremental_0095_weight140_536_20_60_1_3_0.07_3_0.9_3_5_10_5e-15_0.005/Mesh_240.off", false);
   //mesh_.removeSelfIntersections();
@@ -21,12 +21,12 @@ KittiViewer::KittiViewer( std::string namecam) {
 }
 
 
-KittiViewer::~KittiViewer() {
+MeshViewer::~MeshViewer() {
   }
 
 
 
-void KittiViewer::run() {
+void MeshViewer::run() {
   cv::Mat image;
   glm::mat4 mvp;
   int countFrame=0;
@@ -176,7 +176,7 @@ void KittiViewer::run() {
 }
 
 
-void KittiViewer::runSimple(std::string namemesh) {
+void MeshViewer::runSimple(std::string namemesh) {
   cv::Mat image;
   glm::mat4 mvp;
   int countFrame=0;
@@ -191,7 +191,7 @@ void KittiViewer::runSimple(std::string namemesh) {
  
   for (int idx1 = 0; idx1 < camParser_->getNumCameras(); idx1++) {
     std::stringstream ss5;
-    //ss5<<"/home/andrea/workspaceC/kittiviewer/AlsoRenders/models/frame_"<<utilities::getFrameNumber(idx1)<<".off";
+    //ss5<<"/home/andrea/workspaceC/MeshViewer/AlsoRenders/models/frame_"<<utilities::getFrameNumber(idx1)<<".off";
     //mesh_.loadFormat(ss5.str().c_str(), false);
     //resetMeshInfo();
 
@@ -227,14 +227,14 @@ void KittiViewer::runSimple(std::string namemesh) {
 }
 
 
-void KittiViewer::restartWithNewMesh(const Mesh& mesh) {
+void MeshViewer::restartWithNewMesh(const Mesh& mesh) {
 
   mesh_.clear();
   mesh_ = mesh;
   resetMeshInfo();
 }
 
-void KittiViewer::initShaders() {
+void MeshViewer::initShaders() {
   //************************depth********************************
   std::cout << "DepthShaderProgram init...";
   depthProgram_->initializeProgram();
@@ -249,13 +249,13 @@ void KittiViewer::initShaders() {
   std::cout << "DONE" << std::endl;
 }
 
-void KittiViewer::createVertexArrayBuffer() {
+void MeshViewer::createVertexArrayBuffer() {
   glGenBuffers(1, &vertexBufferObj_);
   resetVertexArrayBuffer();
 
 }
 
-void KittiViewer::resetMeshInfo() {
+void MeshViewer::resetMeshInfo() {
 
   mesh_.updateMeshData(false, false);
   mesh_.resetSimplexIndices();
@@ -263,7 +263,7 @@ void KittiViewer::resetMeshInfo() {
   resetVertexArrayBuffer();
 }
 
-void KittiViewer::resetVertexArrayBuffer() {
+void MeshViewer::resetVertexArrayBuffer() {
   glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObj_);
   std::vector<glm::vec3> verticesUnwrapped;
 
@@ -288,7 +288,7 @@ void KittiViewer::resetVertexArrayBuffer() {
 
 
 
-glm::mat4 KittiViewer::setCameraParamAndGetMvp(const CameraType &cam) {
+glm::mat4 MeshViewer::setCameraParamAndGetMvp(const CameraType &cam) {
   glm::mat3 r = cam.rotation;
   /*r = glm::transpose(cam.rotation);
   glm::vec3 t = - cam.center * (r);*/
@@ -301,7 +301,7 @@ glm::mat4 KittiViewer::setCameraParamAndGetMvp(const CameraType &cam) {
 
 
 
-void KittiViewer::initialize() {
+void MeshViewer::initialize() {
 
   vertexBufferObj_  = imageElemBufferObj_ = -1;
   framebufferDepth_ = depthTexture_ = -1;
@@ -309,7 +309,7 @@ void KittiViewer::initialize() {
   imageHeight_ = 1200;
   imageWidth_ = 1600;
 
-  ///camParser_ = new CamParser("/home/andrea/workspaceC/kittiviewer/AlsoRenders/cam_poses.txt");std::string namecam
+  ///camParser_ = new CamParser("/home/andrea/workspaceC/MeshViewer/AlsoRenders/cam_poses.txt");std::string namecam
   camParser_ = new CamParser(namecam_.c_str());
   std::cout<<namecam_<<std::endl;
   camParser_->parseFile();

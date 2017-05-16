@@ -1,9 +1,3 @@
-/*
- * TransformationController.cpp
- *
- *  Created on: 16/giu/2014
- *      Author: andrea
- */
 
 #include "TransformationController.h"
 

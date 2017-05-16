@@ -5,8 +5,8 @@
  *      Author: andrea
  */
 
-#ifndef KITTIVIEWERMESH_MESHSWEEPER_H_
-#define KITTIVIEWERMESH_MESHSWEEPER_H_
+#ifndef MeshViewerMESH_MESHSWEEPER_H_
+#define MeshViewerMESH_MESHSWEEPER_H_
 
 #include "OpenGLProgram.h"
 #include "types.hpp"
@@ -21,10 +21,10 @@
 #include <vector>
 
 
-class KittiViewer : public OpenGLProgram {
+class MeshViewer : public OpenGLProgram {
 public:
-  KittiViewer(std::string namecam);
-  virtual ~KittiViewer();
+  MeshViewer(std::string namecam);
+  virtual ~MeshViewer();
 
   void run();
   void runSimple(std::string namemesh);
@@ -57,4 +57,4 @@ private:
   std::string namecam_;
 };
 
-#endif /* KITTIVIEWERMESH_MESHSWEEPER_H_ */
+#endif /* MeshViewerMESH_MESHSWEEPER_H_ */

@@ -1,9 +1,3 @@
-/*
- * TextureManager.cpp
- *
- *  Created on: 25/giu/2014
- *      Author: andrea
- */
 
 #include "TextureManager.h"
 #include <iostream>

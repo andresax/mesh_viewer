@@ -1,10 +1,3 @@
-/*
- * OpenGLProgram.cpp
- *
- *  Created on: 01/apr/2015
- *      Author: andrea
- */
-
 #include "OpenGLProgram.h"
 
 #include <GL/glew.h>
