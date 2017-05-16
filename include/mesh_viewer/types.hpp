@@ -17,113 +17,26 @@ struct CameraType {
 };
 
 
-typedef struct {
-  glm::vec3 point;
-  float ncc;
-  int idx1;
-  int idx2;
-}PointNccSweep;
+struct SfMData {
 
+  int numPoints_;
+  int numCameras_;
 
-struct PointParser {
-    float x;
-    float y;
-    float z;
+  std::vector<glm::vec3> points_;
+  std::vector<CameraType> camerasList_;
+  std::vector<std::string> camerasPaths_;
 
-    int R;
-    int G;
-    int B;
+  std::vector<std::vector<int> > camViewingPointN_;
+  std::vector<std::vector<int> > pointsVisibleFromCamN_;
+  std::vector<std::vector<glm::vec2> > point2DoncamViewingPoint_;
 
-    //position of the feature in the corresponding image;
-    //the center of the image plane is the origin
-    std::vector<float> viewingCamerasX;
-    std::vector<float> viewingCamerasY;
-
-    std::vector<int> viewingCamerasIndices;
+  int imageWidth_, imageHeight_;
 };
 
-
-
-typedef struct  {
-    std::string folderImage;
-    std::string baseNameImage;
-    std::string imageExtension;
-    int idxFirstFrame;
-    int digitIdxLength; //if 0 no padding
-    int idxLastFrame;
-    int downsampleRate;
-    int imageH;
-    int imageW;
-} VideoConfig;
-
-
-typedef struct {
-    int keyFramePeriod;
-    int keyFramePeriodIteration;
-    double cannyHighThreshold;
-    int downsamplePeriod;
-    int maxGaussNewtonIteration;
-    int minDistBetweenTrackedPoints;
-    double maxEpipolarDist;
-    int minTrackLength;
-    int manifoldPeriod;
-    bool inverseConicEnabled;
-    double probOrVoteThreshold;
-    int edgePointEnabled;
-    int firstGrowingFrame;
-    double maxDistanceCamFeature;
-    bool enableSuboptimalPolicy;
-    int suboptimalMethod;
-} SpaceCarvingConfig;
-
-
-typedef struct {
-    std::string pathToSave;
-    std::string pathLog;
-    std::string pathLogPoints;
-    std::string pathStats;
-    std::string pathStatsManifold;
-    bool enableSaveReconstr;
-    bool enableSaveShrink;
-} OutputSpaceCarving;
-
-
-typedef struct {
-  std::string pathInitMesh;
-  std::string pathCamsPose;
-  float thresholdNCC;
-  float kSweepingDistance;
-  float numPlanes;
-  int windowNCC;
-  int windowLocalMaxima;
-  int rowGrid;
-  int colGrid;
-  int maxPointsPerCell;
-} SweepConfig;
-
-typedef struct {
-  std::string pathInitPoints;
-  std::string pathCamsPose;
-} ManifoldRecConfig;
-
-typedef struct {
-    std::string pathToSave;
-    std::string pathFirstMesh;
-    std::string nameFirstMesh;
-    std::string nameMesh;
-    std::string pathMesh;
-    std::string nameDataset;
-    std::string pathStatsManifold;
-} OutputSweep;
-
-typedef struct {
-} OutputManifoldConfig;
-
-
 typedef struct Config {
-    VideoConfig videoConfig;
-    SweepConfig sweepConfig;
-    OutputSweep outputSweep;
-} SweepConfiguration;
+    std::string camerasFilePath_;
+    std::string correspondencesPath_;
+    std::string pathOutDir_;
+} ViewerConfiguration;
 
 #endif /* TYPES_HPP_ */

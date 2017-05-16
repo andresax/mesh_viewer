@@ -1,5 +1,5 @@
-#ifndef CAMPARSER_H_
-#define CAMPARSER_H_
+#ifndef MiddelburyParser_H_
+#define MiddelburyParser_H_
 
 #include <iostream>
 #include <fstream>
@@ -8,10 +8,10 @@
 
 #include <glm.hpp>
 
-class CamParser {
+class MiddelburyParser {
   public:
-    CamParser(std::string fileInput);
-    virtual ~CamParser();
+    MiddelburyParser(std::string fileInput);
+    virtual ~MiddelburyParser();
     bool parseFile(const int &downsample = 1);
 
     const std::vector<CameraType>& getCamerasList() const {
@@ -38,4 +38,4 @@ class CamParser {
     std::vector<CameraType> camerasList_;
     std::vector<std::string> camerasPaths_;
 };
-#endif /* CAMPARSER_H_ */
+#endif /* MiddelburyParser_H_ */

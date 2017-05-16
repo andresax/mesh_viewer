@@ -1,22 +1,18 @@
-#include <CamParser.h>
+#include "MiddelburyParser.h"
 
 #include <gtc/matrix_transform.hpp>
-#include <gtc/type_ptr.hpp>
 #include <gtc/type_ptr.hpp>
 #include <sstream>
 #include "utilities.hpp"
 
-#include <MiddelburyParser.h>
-#include <OpenMvgParser.h>
-
-CamParser::CamParser(std::string fileName) : fileName_(fileName), numCameras_(0), numPoints_(0) {
+MiddelburyParser::MiddelburyParser(std::string fileName) : fileName_(fileName), numCameras_(0), numPoints_(0) {
   fileStream_.open(fileName_.c_str(),std::ios::in);
 }
 
-CamParser::~CamParser() {
+MiddelburyParser::~MiddelburyParser() {
 }
 
-bool CamParser::parseFile(const int &downsample) {
+bool MiddelburyParser::parseFile(const int &downsample) {
 
   std::string line;
 

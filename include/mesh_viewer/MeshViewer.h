@@ -1,12 +1,5 @@
-/*
- * MeshSweeper.h
- *
- *  Created on: 01/apr/2015
- *      Author: andrea
- */
-
-#ifndef MeshViewerMESH_MESHSWEEPER_H_
-#define MeshViewerMESH_MESHSWEEPER_H_
+#ifndef MeshViewer_H_
+#define MeshViewer_H_
 
 #include "OpenGLProgram.h"
 #include "types.hpp"

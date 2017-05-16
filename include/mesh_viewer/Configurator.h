@@ -1,7 +1,7 @@
 #ifndef CONFIGURATOR_H_
 #define CONFIGURATOR_H_
 
-#include <types_config.hpp>
+#include <types.hpp>
 
 #include <string>
 #include <fstream>
@@ -11,18 +11,12 @@ class Configurator {
   public:
     Configurator(const std::string &path);
     virtual ~Configurator();
-    ConfigurationSemanticReconstruction parseConfigFile();
-
-  void setOptionalNameDir(const std::string& optionalNameDir) {
-    this->optionalNameDir = optionalNameDir;
-  }
+    ViewerConfiguration parseConfigFile();
 
   private:
     void createDirRes();
 
-    std::string optionalNameDir;
-
-    ConfigurationSemanticReconstruction c;
+    ViewerConfiguration c;
     std::ifstream file_;
 };
 
