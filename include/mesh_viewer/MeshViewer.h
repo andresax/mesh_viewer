@@ -50,4 +50,4 @@ private:
   std::string namecam_;
 };
 
-#endif /* MeshViewerMESH_MESHSWEEPER_H_ */
+#endif /* MeshViewer_H_ */

@@ -11,7 +11,7 @@
 #include <rapidjson/reader.h>
 #include <utilities.hpp>
 
-OpenMvgParser::OpenMvgParser(std::string path) {
+OpenMvgParser::OpenMvgParser(std::string fileName): :CameraParse(fileName)  {
   fileStream_.open(path.c_str());
 }
 
@@ -24,7 +24,7 @@ OpenMvgParser::~OpenMvgParser() {
   sfm_data_.point2DoncamViewingPoint_.clear();
 }
 
-void OpenMvgParser::parse() {
+void OpenMvgParser::parseFile() {
   std::string str((std::istreambuf_iterator<char>(fileStream_)), std::istreambuf_iterator<char>());
   document_.Parse(str.c_str());
 
@@ -45,11 +45,14 @@ void OpenMvgParser::parse() {
 
   parseViews(intrinsics,distortion, extrinsics);
 
-  parsePoints();
+  //parsePoints();
 
   for (rapidjson::SizeType curCam = 0; curCam < sfm_data_.camerasList_.size(); curCam++) {
     utilities::convertToMvp2(sfm_data_.camerasList_[curCam],sfm_data_.camerasList_[curCam].mvp);
   }
+
+  camerasList_=sfm_data_.camerasList_;
+  return true;
 }
 
 void OpenMvgParser::parseViews(const std::map<int, glm::mat3> & intrinsics, const std::map<int, glm::vec3> &distortion, const std::map<int, CameraType> & extrinsics) {
@@ -254,6 +257,8 @@ void OpenMvgParser::parseIntrinsics(std::map<int, glm::mat3> & intrinsics,std::m
     std::cout << e.what() << std::endl;
 
   }
+
+
 }
 
 void OpenMvgParser::parseExtrinsics(std::map<int, CameraType> & extrinsics) {

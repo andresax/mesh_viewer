@@ -8,7 +8,6 @@
 #ifndef CAM_PARSERS_OPENMVGPARSER_H_
 #define CAM_PARSERS_OPENMVGPARSER_H_
 
-#include <SfMData.h>
 #include <types.hpp>
 #include <iostream>
 #include <fstream>
@@ -20,17 +19,11 @@
 class OpenMvgParser {
 public:
   OpenMvgParser(std::string path);
-  OpenMvgParser();
   virtual ~OpenMvgParser();
-  virtual void parse();
+  bool parseFile();
 
   const SfMData& getSfmData() const {
     return sfm_data_;
-  }
-
-  void setFileName(const std::string& fileName) {
-    fileName_ = fileName;
-    fileStream_.open(fileName_.c_str());
   }
 
 private:
@@ -41,8 +34,6 @@ private:
 
 
   rapidjson::Document document_;
-  std::string fileName_;
-  std::ifstream fileStream_;
   SfMData sfm_data_;
 
 };

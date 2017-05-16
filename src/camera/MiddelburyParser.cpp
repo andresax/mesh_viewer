@@ -5,14 +5,13 @@
 #include <sstream>
 #include "utilities.hpp"
 
-MiddelburyParser::MiddelburyParser(std::string fileName) : fileName_(fileName), numCameras_(0), numPoints_(0) {
-  fileStream_.open(fileName_.c_str(),std::ios::in);
+MiddelburyParser::MiddelburyParser(std::string fileName) : :CameraParse(fileName) {
 }
 
 MiddelburyParser::~MiddelburyParser() {
 }
 
-bool MiddelburyParser::parseFile(const int &downsample) {
+bool MiddelburyParser::parseFile() {
 
   std::string line;
 
@@ -21,11 +20,11 @@ bool MiddelburyParser::parseFile(const int &downsample) {
   std::istringstream iss(line);
   iss >> numCameras_;
 
-  for (int curCam = 0; curCam < numCameras_; curCam = curCam + downsample) {
+  for (int curCam = 0; curCam < numCameras_; curCam = curCam + 1) {
     CameraType tempCamera;
 
     //discard the line of cams to be skipped
-    for (int var = 0; var < downsample; ++var) {
+    for (int var = 0; var < 1; ++var) {
       std::getline(fileStream_, line);
     }
 
