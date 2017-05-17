@@ -7,198 +7,42 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <Configurator.h>
 #include <glm.hpp>
 
 
 MeshViewer::MeshViewer( std::string namecam) {
- namecam_ = namecam;
-  //mesh_.loadFormat("/home/andrea/workspaceC/incremental_dense_reconstruction/Results/Incremental_0095_weight140_536_20_60_1_3_0.07_3_0.9_3_5_10_5e-15_0.005/Mesh_240.off", false);
-  //mesh_.removeSelfIntersections();
-  //mesh_.smooth(0.5,0);
-  //mesh_.smooth(0.5,0);
+ Configurator c(namecam);
+ ViewerConfiguration = c.parseConfigFile();
   initialize();
-
 }
 
 
 MeshViewer::~MeshViewer() {
-  }
-
-
+}
 
 void MeshViewer::run() {
   cv::Mat image;
-  glm::mat4 mvp;
-  int countFrame=0;
-  int countFramess=0;
-  cv::Mat capture;  
-  cv::Mat last;  
-  bool newmesh=false;
-  bool merged=false;
-  /*float totl=0.0;
-  glm::vec3 lastc;
-  for (int idx1 = 1; idx1 < camParser_->getNumCameras();  idx1+=2) {
-    setCameraParamAndGetMvp(camParser_->getCamerasList()[idx1]);
-    glm::vec3 curCenter = cameraTransformationController_->getCameraCenter();
-    if(idx1>1){
-      totl = totl + glm::length(lastc - curCenter);
-    }
-    lastc = curCenter;
 
-  }*/
-  
-  /*float curlength=0.0;
-  setCameraParamAndGetMvp(camParser_->getCamerasList()[0]);
-  lastc = cameraTransformationController_->getCameraCenter();*/
-
-  //int last=-1;
-  int offset = 60;
-  for (int idx1 = 0; idx1 < camParser_->getNumCameras(); idx1+=2) {
-    mvp = setCameraParamAndGetMvp(camParser_->getCamerasList()[idx1+1]);
-    glm::vec3 curCenter = cameraTransformationController_->getCameraCenter();
-    image = cv::imread(camParser_->getCamerasPaths()[idx1]);
-
-    int cur = idx1+offset;
-    std::stringstream ss1;
-    if(idx1==0)
-      ss1<<"/home/andrea/workspaceC/incremental_dense_reconstruction/Results/Incremental_0095_weight140_536_20_60_1_3_0.07_3_0.9_3_5_10_5e-15_0.005/Mesh_curToBeRefined_count240.off";
-    else if(cur>240)
-      ss1<<"/home/andrea/workspaceC/incremental_dense_reconstruction/Results/Incremental_0095_weight140_536_20_60_1_3_0.07_3_0.9_3_5_10_5e-15_0.005/Mesh_curToBeRefined_count"<<cur<<".off";
-    
-    std::ifstream infile(ss1.str());
-    if(infile.good()){
-      for (int i = 0; i<(merged? 10:0); ++i){
-        /*std::stringstream ss2;
-        ss2<<"0095IncrRec/"<<utilities::getFrameNumber(++countFrame)<<".png";
-        cv::imwrite(ss2.str().c_str(),last);*/
-        std::stringstream ss2,ss3;
-        ss2<<"0095IncrRec/"<<utilities::getFrameNumber(++countFrame)<<".png";
-        ss3<<"/home/andrea/Desktop/Datasets/KITTI/2011_09_26/2011_09_26_drive_0095_sync/image_02/data/"<<utilities::getFrameNumber(countFramess)<<".png";
-        //cv::imwrite(ss3.str().c_str(),capture);
-
-        //cv::imwrite(ss2.str().c_str(),cv::imread(ss3.str().c_str()));
-        cv::imwrite(ss2.str().c_str(),cv::imread(ss3.str().c_str()));
-      }
-      std::cout<<ss1.str()<<std::endl;
-      //mesh_.loadFormat(ss1.str().c_str(), false);
-      resetMeshInfo();
-      //************************depth************************
-      depthProgram_->setArrayBufferObj(vertexBufferObj_, mesh_.p.size_of_facets() * 3);
-      depthProgram_->setUseElementsIndices(false);
-      static_cast<DepthShaderProgram *>(depthProgram_)->computeDepthMap(framebufferDepth_, mvp);
-      glFinish();
-      //************************reprojection**************************
-      reprojProgram_->setArrayBufferObj(vertexBufferObj_, mesh_.p.size_of_facets() * 3);
-      reprojProgram_->setUseElementsIndices(false);
-      static_cast<ReprojectionShaderProgram *>(reprojProgram_)->setCamCenter(curCenter);
-      static_cast<ReprojectionShaderProgram *>(reprojProgram_)->setDepthTexture(depthTexture_);
-      static_cast<ReprojectionShaderProgram *>(reprojProgram_)->setMvp(mvp);
-      reprojProgram_->populateTex(image);
-      reprojProgram_->compute(false);
-      glFinish();
-      CaptureViewPortFloat(capture, GL_RGB, 3);
-      SwapBuffers();    
-
-      for (int i = 0; i < 10; ++i){
-        /*std::stringstream ss2;
-        ss2<<"0095IncrRec/"<<utilities::getFrameNumber(++countFrame)<<".png";
-        cv::imwrite(ss2.str().c_str(),capture);*/
-        std::stringstream ss2,ss3;
-        ss2<<"0095IncrRec/"<<utilities::getFrameNumber(++countFrame)<<".png";
-        ss3<<"/home/andrea/Desktop/Datasets/KITTI/2011_09_26/2011_09_26_drive_0095_sync/image_02/data/"<<utilities::getFrameNumber(countFramess)<<".png";
-        //cv::imwrite(ss2.str().c_str(),capture);
-        cv::imwrite(ss2.str().c_str(),cv::imread(ss3.str().c_str()));
-      }
-      std::cout << "Iteration num. " << idx1 << " done!" << std::endl;
-      newmesh=true;
-    } 
-    infile.close();
-
-
-    std::stringstream ss;
-    //int cur = floor(static_cast<float>(idx1)/2000.0 *891.0)+15;
-    //int cur = floor(curlength/totl *930.0)+10;
-    if(idx1==0)
-      ss<<"/home/andrea/workspaceC/incremental_dense_reconstruction/Results/Incremental_0095_weight140_536_20_60_1_3_0.07_3_0.9_3_5_10_5e-15_0.005/Mesh_240.off";
-    else if(cur>240)
-      ss<<"/home/andrea/workspaceC/incremental_dense_reconstruction/Results/Incremental_0095_weight140_536_20_60_1_3_0.07_3_0.9_3_5_10_5e-15_0.005/Mesh_"<<cur<<".off";
-    std::cout<<"------floor"<<cur<<std::endl;
-    
-    std::ifstream infile2(ss.str());
-    if(infile2.good() ){
-      std::cout<<ss.str()<<std::endl;
-      //mesh_.loadFormat(ss.str().c_str(), false);
-      ////mesh_.smooth(0.5,0);
-      //mesh_.smooth(0.5,0);
-      resetMeshInfo();
-      //last = cur;
-
-    }
-    infile2.close();
-
-
-    //************************depth************************
-    depthProgram_->setArrayBufferObj(vertexBufferObj_, mesh_.p.size_of_facets() * 3);
-    depthProgram_->setUseElementsIndices(false);
-    static_cast<DepthShaderProgram *>(depthProgram_)->computeDepthMap(framebufferDepth_, mvp);
-    glFinish();
-
-    //************************reprojection**************************
-    reprojProgram_->setArrayBufferObj(vertexBufferObj_, mesh_.p.size_of_facets() * 3);
-    reprojProgram_->setUseElementsIndices(false);
-    static_cast<ReprojectionShaderProgram *>(reprojProgram_)->setCamCenter(curCenter);
-    static_cast<ReprojectionShaderProgram *>(reprojProgram_)->setDepthTexture(depthTexture_);
-    static_cast<ReprojectionShaderProgram *>(reprojProgram_)->setMvp(mvp);
-    reprojProgram_->populateTex(image);
-    reprojProgram_->compute(false);
-    glFinish();
-
-    SwapBuffers();    
-    CaptureViewPortFloat(capture, GL_RGB, 3);
-
-    std::cout << "newmesh. " << newmesh << " done!" << std::endl;
-    std::cout << "newmesh?10:1. " << (newmesh==true ? 10 : 1) << " done!" << std::endl;
-    for (int i = 0; i < (newmesh ? 10 : 1); ++i){
-      std::stringstream ss2,ss3;
-      ss2<<"0095IncrRec/"<<utilities::getFrameNumber(++countFrame)<<".png";
-      ss3<<"/home/andrea/Desktop/Datasets/KITTI/2011_09_26/2011_09_26_drive_0095_sync/image_02/data/"<<utilities::getFrameNumber(countFramess)<<".png";
-     // cv::imwrite(ss3.str().c_str(),capture);
-        cv::imwrite(ss2.str().c_str(),cv::imread(ss3.str().c_str()));
-    }
-    newmesh=false;
-    merged=true;
-    countFramess++;
-    std::cout << "Iteration num. " << idx1 << " done!" << std::endl;
-    last = capture;
-  }  
-
-  image.release();
-}
-
-
-void MeshViewer::runSimple(std::string namemesh) {
-  cv::Mat image;
-  glm::mat4 mvp;
-  int countFrame=0;
-  int countFramess=0;
-  cv::Mat capture;  
-  cv::Mat last;  
-  bool merged=false;
-//TODO change hardcoded mesh file name
-  mesh_.loadFormat(namemesh.c_str(), false);
-  std::cout<<namemesh<<std::endl;
-  resetMeshInfo();
+  for (auto curTriplet: orderedViewingTriplets_){
  
-  for (int idx1 = 0; idx1 < camParser_->getNumCameras(); idx1++) {
-    std::stringstream ss5;
-    //ss5<<"/home/andrea/workspaceC/MeshViewer/AlsoRenders/models/frame_"<<utilities::getFrameNumber(idx1)<<".off";
-    //mesh_.loadFormat(ss5.str().c_str(), false);
-    //resetMeshInfo();
+    if(curTriplet.meshPath.compare("")!=0){//the string is not void
+      mesh_.loadFormat(curTriplet.meshPath.c_str(), false);
+      resetMeshInfo();
+    }
 
-    mvp = setCameraParamAndGetMvp(camParser_->getCamerasList()[idx1]);
-    glm::vec3 curCenter = cameraTransformationController_->getCameraCenter();
-    //image = cv::imread(camParser_->getCamerasPaths()[idx1]);
-    //image = cv::Mat();
+
+    glm::mat4 mvp = camParser_->getSfmData().camerasList_[curTriplet.cameraId].mvp;
+    glm::vec3 curCenter = camParser_->getSfmData().camerasList_[curTriplet.cameraId].center;
+    cv::imwrite(ss2.str().c_str(),capture);
+
+    cv::Mat curImage;
+
+    if(curTriplet.imageId==-1){
+      curImage cv::imread(camParser_->getSfmData().camerasList_[curTriplet.imageId]);
+    }
+
+
     //************************depth************************
     depthProgram_->setArrayBufferObj(vertexBufferObj_, mesh_.p.size_of_facets() * 3);
     depthProgram_->setUseElementsIndices(false);
@@ -299,8 +143,6 @@ void MeshViewer::initialize() {
   vdp_.parseFile();
   orderedViewingTriplets_ = vdp.getOrderedViewingTriplets();
 
-
-  ///camParser_ = new CamParser("/home/andrea/workspaceC/MeshViewer/AlsoRenders/cam_poses.txt");std::string namecam
   camParser_ = new CamParser(namecam_.c_str());
   std::cout<<namecam_<<std::endl;
   camParser_->parseFile();

@@ -1,17 +1,16 @@
 #ifndef MeshViewer_H_
 #define MeshViewer_H_
 
-#include "OpenGLProgram.h"
-#include "types.hpp"
 #include "Mesh.h"
 #include "CamParser.h"
 #include "ShaderProgram.h"
-#include "TransformationController.h"
 
 #include <opencv2/core/core.hpp>
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <ViewingDataParser.h>
+#include <types.hpp>
 
 
 class MeshViewer : public OpenGLProgram {
@@ -20,7 +19,6 @@ public:
   virtual ~MeshViewer();
 
   void run();
-  void runSimple(std::string namemesh);
 void restartWithNewMesh(const Mesh& mesh);
   //void simpleMeshUpdate();
 
@@ -41,12 +39,14 @@ private:
   ShaderProgram *depthProgram_;
   ShaderProgram *reprojProgram_;
 
+  ViewerConfiguration c;
+
   //***************shaders variables*********************************
   GLuint vertexBufferObj_, imageArrayBufferObj_, imageElemBufferObj_;
   GLuint framebufferDepth_;
   GLuint depthTexture_;
   GLuint reprojTex_;
-  std::string namecam_;
+
   std::vector<ViewingTriplet> orderedViewingTriplets_;
 };
 

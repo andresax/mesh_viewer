@@ -23,10 +23,10 @@ struct SfMData {
   int imageWidth_, imageHeight_;
 };
 
-typedef struct Config {
+struct ViewerConfiguration {
     std::string camerasFilePath_;
     std::string correspondencesPath_;
     std::string pathOutDir_;
-} ViewerConfiguration;
+} ;
 
 #endif /* TYPES_HPP_ */
