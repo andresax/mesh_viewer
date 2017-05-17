@@ -15,7 +15,7 @@ find_package(GLUT REQUIRED)
 find_package(CGAL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(OpenCV REQUIRED)
-find_package(ASSIMP REQUIRED)
+find_package(ASSIMP REQUIRED) 
 find_package(Eigen3 REQUIRED) 
  
 if(CMAKE_BUILD_TYPE STREQUAL "Release")

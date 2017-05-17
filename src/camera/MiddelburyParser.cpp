@@ -3,6 +3,7 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 #include <sstream>
+#include <opencv2/highgui/highgui.hpp>
 #include <utilities.hpp>
 
 MiddelburyParser::MiddelburyParser(std::string fileName) {
@@ -12,7 +13,7 @@ MiddelburyParser::MiddelburyParser(std::string fileName) {
 MiddelburyParser::~MiddelburyParser() {
 }
 
-bool MiddelburyParser::parseFile() {
+bool MiddelburyParser::parse() {
 
   std::string line;
 
@@ -82,9 +83,11 @@ bool MiddelburyParser::parseFile() {
   sfm_data_.camerasList_ = camerasList_;
   for (int curCam = 0; curCam < sfm_data_.camerasList_.size(); curCam++) {
     utilities::convertToMvp2(sfm_data_.camerasList_[curCam],sfm_data_.camerasList_[curCam].mvp);
+    sfm_data_.camerasList_[curCam].imageWidth  = cv::imread(sfm_data_.camerasList_[curCam].cameraPath).cols;
+    sfm_data_.camerasList_[curCam].imageHeight = cv::imread(sfm_data_.camerasList_[curCam].cameraPath).rows;
   }
-  sfm_data_.imageWidth_  = cv::imread(tempCamera.cameraPath).width;
-  sfm_data_.imageHeight_ = cv::imread(tempCamera.cameraPath).height;
+  sfm_data_.imageWidth_  = sfm_data_.camerasList_[0].imageWidth;
+  sfm_data_.imageHeight_ = sfm_data_.camerasList_[0].imageHeight;
   sfm_data_.numCameras_  = sfm_data_.camerasList_.size();
 
 

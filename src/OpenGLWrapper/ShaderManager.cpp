@@ -40,7 +40,7 @@ bool ShaderManager::addShader(GLenum shaderType, std::string path) {
   GLuint shaderObj = loadShaderFromFile(path, shaderType);
 
   if (shaderObj == 0) {
-    fprintf(stderr, "Error creating shader type %c\n", getShaderTypeString(shaderType).c_str());
+    fprintf(stderr, "Error creating shader type %s\n", getShaderTypeString(shaderType).c_str());
     return false;
   }
 

@@ -13,6 +13,7 @@
 #include <vector>
 #include <glm.hpp>
 #include <string>
+#include <types.hpp>
 
 namespace utilities {
 

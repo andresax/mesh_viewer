@@ -86,7 +86,7 @@ void TransformationController::setIntrinsicParameters(float fx, float fy, float 
   projectionMatrix_[3][2] = -(2 * N * F) / (F - N);
   projectionMatrix_[2][3] = 1.0;*/
   /*std::cout <<"setIntrinsicParameters"<<std::endl;
-   utils::printMatrix(projectionMatrix_);*/
+   utilities::printMatrix(projectionMatrix_);*/
 
   glm::mat4 persp = glm::mat4(0.0);
   persp[0][0] = fx;
@@ -114,11 +114,11 @@ void TransformationController::setIntrinsicParameters(float fx, float fy, float 
   ortho[3][3] = 1.0;
   projectionMatrix_ = glm::transpose(persp * ortho);
   /*std::cout <<"projectionMatrix_"<<std::endl;
-   utils::printMatrix(projectionMatrix_);
+   utilities::printMatrix(projectionMatrix_);
    std::cout <<"persp"<<std::endl;
-    utils::printMatrix(persp);
+    utilities::printMatrix(persp);
     std::cout <<"ortho"<<std::endl;
-     utils::printMatrix(ortho);*/
+     utilities::printMatrix(ortho);*/
 }
 
 void TransformationController::setExtrinsicParameters(const glm::mat3& rotation, const glm::vec3& translation) {
@@ -134,7 +134,7 @@ void TransformationController::computeMatricesFromCam() {
 
 glm::vec3 TransformationController::getCameraCenter() {
   glm::vec3 temp =  - translation_ * glm::transpose(rotation_);
-  //utils::printMatrix(temp);
+  //utilities::printMatrix(temp);
   return temp;
 
 }
@@ -180,11 +180,11 @@ void TransformationController::recomputeViewMatrix() {
   viewMatrix_[3][3] = 1.0;
 
  /* std::cout <<"viewMatrix_"<<std::endl;
-  utils::printMatrix(viewMatrix_);*/
+  utilities::printMatrix(viewMatrix_);*/
   mvp_ = projectionMatrix_* curRottemp_ *viewMatrix_ * modelMatrix_;
   mvp_ = projectionMatrix_ * viewMatrix_ * modelMatrix_;
   /*std::cout <<"mvp_"<<std::endl;
-  utils::printMatrix(mvp_);*/
+  utilities::printMatrix(mvp_);*/
 
 }
 
@@ -231,33 +231,33 @@ void TransformationController::moveCamFromInputs() {
     }
 
     if (glfwGetKey(window_, GLFW_KEY_P) == GLFW_PRESS) {
-      rotTmp = utils::rotX(deltaTetha);
+      rotTmp = utilities::rotX(deltaTetha);
       updateMatrix = true;
     }
 
     if (glfwGetKey(window_, GLFW_KEY_O) == GLFW_PRESS) {
-      rotTmp = utils::rotX(-deltaTetha);
+      rotTmp = utilities::rotX(-deltaTetha);
       updateMatrix = true;
     }
 
     if (glfwGetKey(window_, GLFW_KEY_L) == GLFW_PRESS) {
-      rotTmp = utils::rotY(deltaTetha);
+      rotTmp = utilities::rotY(deltaTetha);
       updateMatrix = true;
     }
 
     if (glfwGetKey(window_, GLFW_KEY_K) == GLFW_PRESS) {
-      rotTmp = utils::rotY(-deltaTetha);
+      rotTmp = utilities::rotY(-deltaTetha);
       updateMatrix = true;
     }
 
     if (glfwGetKey(window_, GLFW_KEY_M) == GLFW_PRESS) {
-      rotTmp = utils::rotZ(deltaTetha);
+      rotTmp = utilities::rotZ(deltaTetha);
       updateMatrix = true;
     }
 
 
     if (glfwGetKey(window_, GLFW_KEY_N) == GLFW_PRESS) {
-      rotTmp = utils::rotZ(-deltaTetha);
+      rotTmp = utilities::rotZ(-deltaTetha);
       updateMatrix = true;
     }
 
@@ -311,7 +311,7 @@ void TransformationController::moveCamFromInputs() {
       curRottemp_ = tm * curRottemp_;
       recomputeViewMatrix();
       //std::cout<<"mmm"<<std::endl;
-      //utils::printMatrix(curRottemp_*viewMatrix_);
+      //utilities::printMatrix(curRottemp_*viewMatrix_);
     }
   }
 }
@@ -360,33 +360,33 @@ void TransformationController::moveModelFromInputs() {
     }
 
     if (glfwGetKey(window_, GLFW_KEY_P) == GLFW_PRESS) {
-      rotTmp = utils::rotX(deltaTetha);
+      rotTmp = utilities::rotX(deltaTetha);
       updateMatrix = true;
     }
 
     if (glfwGetKey(window_, GLFW_KEY_O) == GLFW_PRESS) {
-      rotTmp = utils::rotX(-deltaTetha);
+      rotTmp = utilities::rotX(-deltaTetha);
       updateMatrix = true;
     }
 
     if (glfwGetKey(window_, GLFW_KEY_L) == GLFW_PRESS) {
-      rotTmp = utils::rotY(deltaTetha);
+      rotTmp = utilities::rotY(deltaTetha);
       updateMatrix = true;
     }
 
     if (glfwGetKey(window_, GLFW_KEY_K) == GLFW_PRESS) {
-      rotTmp = utils::rotY(-deltaTetha);
+      rotTmp = utilities::rotY(-deltaTetha);
       updateMatrix = true;
     }
 
     if (glfwGetKey(window_, GLFW_KEY_M) == GLFW_PRESS) {
-      rotTmp = utils::rotZ(deltaTetha);
+      rotTmp = utilities::rotZ(deltaTetha);
       updateMatrix = true;
     }
 
 
     if (glfwGetKey(window_, GLFW_KEY_N) == GLFW_PRESS) {
-      rotTmp = utils::rotZ(-deltaTetha);
+      rotTmp = utilities::rotZ(-deltaTetha);
       updateMatrix = true;
     }
 

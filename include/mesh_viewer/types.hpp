@@ -12,8 +12,12 @@ struct CameraType {
     glm::mat3 rotation;
     glm::vec3 translation;
     glm::mat4 cameraMatrix;
+    glm::mat4 mvp;
     glm::vec3 center;
     std::string cameraPath;
+    int imageWidth;
+    int imageHeight;
+    glm::vec3 distortion_coeff;
 };
 
 

@@ -5,16 +5,11 @@
 #include <utilities.hpp>
 
 OpenMvgParser::OpenMvgParser(std::string fileName) {
-  fileStream_.open(path.c_str());
+  fileStream_.open(fileName.c_str());
 }
 
 OpenMvgParser::~OpenMvgParser() {
-  sfm_data_.points_.clear();
   sfm_data_.camerasList_.clear();
-  sfm_data_.camerasPaths_.clear();
-  sfm_data_.camViewingPointN_.clear();
-  sfm_data_.pointsVisibleFromCamN_.clear();
-  sfm_data_.point2DoncamViewingPoint_.clear();
 }
 
 void OpenMvgParser::parse() {
@@ -43,7 +38,6 @@ void OpenMvgParser::parse() {
   }
 
   camerasList_=sfm_data_.camerasList_;
-  return true;
 }
 
 void OpenMvgParser::parseViews(const std::map<int, glm::mat3> & intrinsics, const std::map<int, glm::vec3> &distortion, const std::map<int, CameraType> & extrinsics) {
@@ -56,14 +50,12 @@ void OpenMvgParser::parseViews(const std::map<int, glm::mat3> & intrinsics, cons
     const rapidjson::Value& camerasJson = document_["views"];
     sfm_data_.numCameras_ = camerasJson.Size();
     sfm_data_.camerasList_.assign(sfm_data_.numCameras_, CameraType());
-    sfm_data_.camerasPaths_.assign(sfm_data_.numCameras_, std::string());
     for (rapidjson::SizeType curCam = 0; curCam < camerasJson.Size(); curCam++) {
 
       std::string local(camerasJson[curCam]["value"]["ptr_wrapper"]["data"]["local_path"].GetString());
       std::string filename(camerasJson[curCam]["value"]["ptr_wrapper"]["data"]["filename"].GetString());
 
-      sfm_data_.camerasList_[curCam].pathImage = basePath + local + filename;
-      sfm_data_.camerasPaths_[curCam] = basePath + local + filename;
+      sfm_data_.camerasList_[curCam].cameraPath = basePath + local + filename;
 
       sfm_data_.camerasList_[curCam].imageWidth = camerasJson[curCam]["value"]["ptr_wrapper"]["data"]["width"].GetInt();
       sfm_data_.camerasList_[curCam].imageHeight = camerasJson[curCam]["value"]["ptr_wrapper"]["data"]["height"].GetInt();
@@ -103,7 +95,6 @@ void OpenMvgParser::parseViews(const std::map<int, glm::mat3> & intrinsics, cons
         sfm_data_.camerasList_[curCam].rotation = glm::mat3(camCurrent.rotation);
         sfm_data_.camerasList_[curCam].translation = glm::vec3(camCurrent.translation);
         sfm_data_.camerasList_[curCam].center = glm::vec3(camCurrent.center);
-        sfm_data_.camerasList_[curCam].valid = true;
        /* std::cout<<"curCam: "<<curCam<<std::endl;
         std::cout<<"Intrinsics A"<<std::endl;
         utilities::printMatrix(kMatrix);
@@ -119,7 +110,6 @@ void OpenMvgParser::parseViews(const std::map<int, glm::mat3> & intrinsics, cons
         utilities::printMatrix(sfm_data_.camerasList_[curCam].cameraMatrix);*/
 
       } catch (std::out_of_range e) {
-        sfm_data_.camerasList_[curCam].valid = false;
         std::cerr << "std::out_of_range exception trying to look for extrinsics matrix " << idExtrinsics << std::endl;
       }
     }
@@ -200,5 +190,3 @@ void OpenMvgParser::parseExtrinsics(std::map<int, CameraType> & extrinsics) {
   }
 }
 
-OpenMvgParser::OpenMvgParser() {
-}

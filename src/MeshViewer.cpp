@@ -12,8 +12,8 @@
 
 
 MeshViewer::MeshViewer( std::string namecam) {
- Configurator c(namecam);
- ViewerConfiguration = c.parseConfigFile();
+ Configurator conf(namecam);
+ c = conf.parseConfigFile();
   initialize();
 }
 
@@ -24,6 +24,7 @@ MeshViewer::~MeshViewer() {
 void MeshViewer::run() {
   cv::Mat image;
 
+int countframe=0;
   for (auto curTriplet: orderedViewingTriplets_){
  
     if(curTriplet.meshPath.compare("")!=0){//the string is not void
@@ -34,14 +35,13 @@ void MeshViewer::run() {
 
     glm::mat4 mvp = camParser_->getSfmData().camerasList_[curTriplet.cameraId].mvp;
     glm::vec3 curCenter = camParser_->getSfmData().camerasList_[curTriplet.cameraId].center;
-    cv::imwrite(ss2.str().c_str(),capture);
+    
 
     cv::Mat curImage;
 
     if(curTriplet.imageId==-1){
-      curImage cv::imread(camParser_->getSfmData().camerasList_[curTriplet.imageId]);
+      curImage = cv::imread(camParser_->getSfmData().camerasList_[curTriplet.imageId].cameraPath);
     }
-
 
     //************************depth************************
     depthProgram_->setArrayBufferObj(vertexBufferObj_, mesh_.p.size_of_facets() * 3);
@@ -58,14 +58,16 @@ void MeshViewer::run() {
     //reprojProgram_->populateTex(image);
     reprojProgram_->compute(false);
     glFinish();
+    cv::Mat capture;
     CaptureViewPortFloat(capture, GL_RGB, 3);
     SwapBuffers();    
 
-    std::stringstream ss2;
-    ss2<<"render_"<<utilities::getFrameNumber(idx1)<<".png";
-    cv::imwrite(ss2.str().c_str(),capture);
-      
-      std::cout << "Iteration num. " << idx1 << " done!" << std::endl;
+    std::stringstream ss;
+    ss<<"render_"<<c.pathOutDir_<<utilities::getFrameNumber(countframe,6)<<".png";
+    cv::imwrite(ss.str().c_str(),capture);
+
+      std::cout << "Iteration num. " << countframe << " done!" << std::endl;
+      countframe++;
   }
   image.release();
 }
@@ -139,16 +141,15 @@ void MeshViewer::initialize() {
   framebufferDepth_ = depthTexture_ = -1;
   reprojTex_ = -1;
 
-  ViewingDataParser vdp_;
+  ViewingDataParser vdp_(c.correspondencesPath_);
   vdp_.parseFile();
-  orderedViewingTriplets_ = vdp.getOrderedViewingTriplets();
+  orderedViewingTriplets_ = vdp_.getOrderedViewingTriplets();
 
-  camParser_ = new CamParser(namecam_.c_str());
-  std::cout<<namecam_<<std::endl;
+  camParser_ = new CamParser(c.camerasFilePath_.c_str());
+  std::cout<<c.camerasFilePath_<<std::endl;
   camParser_->parseFile();
-  std::cout<<"numcam "<<camParser_->getNumCameras()<<std::endl;
-  imageHeight_ = camParser_->getCamerasList().imageHeight_;
-  imageWidth_ = camParser_->getCamerasList().imageWidth_;
+  imageHeight_ = camParser_->getSfmData().imageHeight_;
+  imageWidth_ = camParser_->getSfmData().imageWidth_;
 
   depthProgram_ = new DepthShaderProgram(imageWidth_, imageHeight_);
   reprojProgram_ = new ReprojectionShaderProgram(imageWidth_, imageHeight_);

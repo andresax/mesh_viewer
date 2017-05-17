@@ -1,23 +1,26 @@
 
 #include <OpenMvgParser.h>
+#include <CamParser.h>
 #include <MiddelburyParser.h>
+#include <string>
 
-CamParser::CamParser(std::string fileName) : fileName_(fileName), numCameras_(0), numPoints_(0) {
+CamParser::CamParser(std::string fileName) : fileName_(fileName) {
   fileStream_.open(fileName_.c_str(),std::ios::in);
 }
 
 CamParser::~CamParser() {
 }
 
-bool CamParser::parseFile();
+bool CamParser::parseFile()
 {
-    if (fileName_.substr(fileName_.end()-9,8).equals("_par.txt")){
+    if (fileName_.substr(fileName_.size()-9,8).compare("_par.txt")==0){
         MiddelburyParser mp(fileName_);
         mp.parse();
         sfm_data_ = mp.getSfmData();
-    }else if(fileName_.substr(fileName_.end()-5,4).equals("json")){
+    }else if(fileName_.substr(fileName_.size()-5,4).compare("json")==0){
         OpenMvgParser omvg(fileName_);
         omvg.parse();
         sfm_data_ = omvg.getSfmData();
     }
+    return true;
 }

@@ -3,7 +3,8 @@
 
 #include "Mesh.h"
 #include "CamParser.h"
-#include "ShaderProgram.h"
+#include <ShaderProgram.h>
+#include <OpenGLProgram.h>
 
 #include <opencv2/core/core.hpp>
 #include <iostream>

@@ -20,7 +20,7 @@ class OpenMvgParser {
 public:
   OpenMvgParser(std::string path);
   virtual ~OpenMvgParser();
-  bool parseFile();
+  void parse();
 
   const SfMData& getSfmData() const {
     return sfm_data_;

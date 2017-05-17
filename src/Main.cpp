@@ -9,8 +9,8 @@
 #include "MeshViewer.h"
 
 int main(int argc, char **argv) {
-  MeshViewer k(argv[2]);
-  k.runSimple(argv[1]);
+  MeshViewer k(argv[1]);
+  k.run();
   return 0;
 }
 

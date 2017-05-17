@@ -27,7 +27,7 @@ ViewerConfiguration Configurator::parseConfigFile() {
 
 void Configurator::createDirRes() {
   std::cout << "Configurator::createDirRes  ..." << std::flush;
-  boost::filesystem::path dir(c.pathOutDir_.str().c_str());
+  boost::filesystem::path dir(c.pathOutDir_.c_str());
   boost::filesystem::create_directories(dir);
   std::cout << "DONE" << std::endl;
 }
