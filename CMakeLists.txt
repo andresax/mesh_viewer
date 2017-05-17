@@ -8,7 +8,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
  
 # ----------------------- LIBRARIES ---------------------------
 
-find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system filesystem)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 #find_package(glfw REQUIRED) 
@@ -17,6 +17,8 @@ find_package(GLEW REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(ASSIMP REQUIRED) 
 find_package(Eigen3 REQUIRED) 
+
+  MESSAGE( STATUS "CMAKE_BUILD_TYPE:      " ${CMAKE_BUILD_TYPE} )
  
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   link_directories(external/TransforMesh/build)
@@ -45,7 +47,6 @@ include_directories(  ${OpenCV_INCLUDE_DIRS}
                       ${GLFW_INCLUDE_DIR} 
                       external/glm/glm/
                       external/
-                      /usr/include/SOIL/ 
                       external/TransforMesh/include
                       ${CGAL_INCLUDE_DIRS} 
                       ${ASSIMP_INCLUDE_DIRS}
