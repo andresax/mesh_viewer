@@ -184,5 +184,85 @@ void readLineAndStore(std::ifstream &configFile, std::string &value) {
   }
 }
 
+void convertToMvp2(CameraType &cam, glm::mat4 &mvpOut) {
+
+  glm::mat4 modelViewMatrix, projectionMatrix;
+  computeModelViewMatrix2(cam.rotation, cam.translation, modelViewMatrix);
+  computeProjectionMatrix2(cam.intrinsics, cam.imageHeight, cam.imageWidth, projectionMatrix);
+  mvpOut = projectionMatrix * modelViewMatrix;
+}
+
+void computeProjectionMatrix2(glm::mat3 &intrinsics, int h, int w, glm::mat4 &projectionMatrixOut) {
+
+  float N = 0.001;
+  float F = 100.0;
+
+  glm::mat4 persp = glm::mat4(0.0);
+  persp[0][0] = intrinsics[0][0];
+  persp[0][1] = 0.0;
+  persp[0][2] = intrinsics[0][2];
+  persp[1][1] = intrinsics[1][1];
+  persp[1][2] = intrinsics[1][2];
+  persp[2][2] = -(N + F);
+  persp[2][3] = N * F;
+  persp[3][2] = 1.0;
+
+  double L = 0;
+  double R = w;
+  double B = 0;
+  double T = h;
+  glm::mat4 ortho = glm::mat4(0.0);
+
+  int dino = 1;/*to change the y sign if dino file format is used*/
+  ortho[0][0] = 2.0 / (R - L);
+  ortho[0][3] = -(R + L) / (R - L);
+  ortho[1][1] = (1 - 2 * dino) * 2.0 / (T - B);
+  ortho[1][3] = -(1 - 2 * dino) * (T + B) / (T - B);
+  ortho[2][2] = (-2.0 / (F - N));
+  ortho[2][3] = (-(F + N) / (F - N));
+  ortho[3][3] = 1.0;
+  projectionMatrixOut = glm::transpose(persp * ortho);
+}
+
+void computeModelViewMatrix2(glm::mat3 &rotation, glm::vec3 &translation, glm::mat4 &modelViewMatrixOut) {
+
+  glm::mat4 modelMatrix = glm::mat4();
+  glm::mat4 viewMatrix = glm::mat4();
+
+  viewMatrix[0][0] = rotation[0][0];
+  viewMatrix[0][1] = rotation[1][0];
+  viewMatrix[0][2] = rotation[2][0];
+  viewMatrix[1][0] = rotation[0][1];
+  viewMatrix[1][1] = rotation[1][1];
+  viewMatrix[1][2] = rotation[2][1];
+  viewMatrix[2][0] = rotation[0][2];
+  viewMatrix[2][1] = rotation[1][2];
+  viewMatrix[2][2] = rotation[2][2];
+  viewMatrix[3][0] = translation.x;
+  viewMatrix[3][1] = translation.y;
+  viewMatrix[3][2] = translation.z;
+  viewMatrix[0][3] = 0.0;
+  viewMatrix[1][3] = 0.0;
+  viewMatrix[2][3] = 0.0;
+  viewMatrix[3][3] = 1.0;
+
+  modelViewMatrixOut = viewMatrix * modelMatrix;
+}
+
+void computeExtrinsicsHZ(const glm::mat3& rotation, const glm::vec3& traslation, glm::mat4& extrinsics) {
+  extrinsics[0][0] = rotation[0][0];
+  extrinsics[0][1] = rotation[0][1];
+  extrinsics[0][2] = rotation[0][2];
+  extrinsics[1][0] = rotation[1][0];
+  extrinsics[1][1] = rotation[1][1];
+  extrinsics[1][2] = rotation[1][2];
+  extrinsics[2][0] = rotation[2][0];
+  extrinsics[2][1] = rotation[2][1];
+  extrinsics[2][2] = rotation[2][2];
+  extrinsics[0][3] = traslation[0];
+  extrinsics[1][3] = traslation[1];
+  extrinsics[2][3] = traslation[2];
+  extrinsics[3][3] = 1.0;
+}
 }
 

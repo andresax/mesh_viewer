@@ -37,7 +37,6 @@ private:
   Mesh mesh_;
   std::vector<cv::Mat> images_;
   CamParser *camParser_;
-  TransformationController *cameraTransformationController_;
    //***************shaders*******************************************
   ShaderProgram *depthProgram_;
   ShaderProgram *reprojProgram_;
@@ -48,6 +47,7 @@ private:
   GLuint depthTexture_;
   GLuint reprojTex_;
   std::string namecam_;
+  std::vector<ViewingTriplet> orderedViewingTriplets_;
 };
 
 #endif /* MeshViewer_H_ */

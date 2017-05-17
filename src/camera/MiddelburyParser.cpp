@@ -1,11 +1,12 @@
-#include "MiddelburyParser.h"
+#include <MiddelburyParser.h>
 
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 #include <sstream>
-#include "utilities.hpp"
+#include <utilities.hpp>
 
-MiddelburyParser::MiddelburyParser(std::string fileName) : :CameraParse(fileName) {
+MiddelburyParser::MiddelburyParser(std::string fileName) {
+  fileStream_.open(fileName.c_str(),std::ios::in);
 }
 
 MiddelburyParser::~MiddelburyParser() {
@@ -41,13 +42,8 @@ bool MiddelburyParser::parseFile() {
         &tempCamera.rotation[2][0] , &tempCamera.rotation[2][1] , &tempCamera.rotation[2][2] ,
         &tempCamera.translation[0] , &tempCamera.translation[1] , &tempCamera.translation[2]);
 
-    camerasPaths_.push_back(std::string(path));
-    /*std::cout << "tempCamera.intrinsics" << std::endl;
-    utils::printMatrix(tempCamera.intrinsics);
-    std::cout << "tempCamera.rotation" << std::endl;
-    utils::printMatrix( tempCamera.rotation);
-    std::cout << "tempCamera.translation" << std::endl;
-    utils::printMatrix( tempCamera.translation);*/
+    tempCamera.cameraPath = std::string(path);
+
 
 
     glm::mat4 tempCameraExtrinsic(0.0);
@@ -61,15 +57,6 @@ bool MiddelburyParser::parseFile() {
     tempCameraExtrinsic[2][1] = tempCamera.rotation[2][1];
     tempCameraExtrinsic[2][2] = tempCamera.rotation[2][2];
 
-    /*tempCameraExtrinsic[0][0] = tempCamera.rotation[0][0];
-    tempCameraExtrinsic[0][1] = tempCamera.rotation[1][0];
-    tempCameraExtrinsic[0][2] = tempCamera.rotation[2][0];
-    tempCameraExtrinsic[1][0] = tempCamera.rotation[0][1];
-    tempCameraExtrinsic[1][1] = tempCamera.rotation[1][1];
-    tempCameraExtrinsic[1][2] = tempCamera.rotation[2][1];
-    tempCameraExtrinsic[2][0] = tempCamera.rotation[0][2];
-    tempCameraExtrinsic[2][1] = tempCamera.rotation[1][2];
-    tempCameraExtrinsic[2][2] = tempCamera.rotation[2][2];*/
 
     tempCameraExtrinsic[0][3] = tempCamera.translation[0];
     tempCameraExtrinsic[1][3] = tempCamera.translation[1];
@@ -85,26 +72,21 @@ bool MiddelburyParser::parseFile() {
     tempCameraIntrinsicH[2][0] = tempCamera.intrinsics[2][0];
     tempCameraIntrinsicH[2][1] = tempCamera.intrinsics[2][1];
     tempCameraIntrinsicH[2][2] = tempCamera.intrinsics[2][2];
-   /* std::cout << "tempCameraIntrinsicH" << std::endl;
-    utils::printMatrix( tempCameraIntrinsicH);
-
-    std::cout << "glm::transpose(tempCameraIntrinsicH) * glm::transpose(tempCameraExtrinsic)" << std::endl;
-    utils::printMatrix( glm::transpose(tempCameraIntrinsicH) * glm::transpose(tempCameraExtrinsic));
-
-    std::cout << " glm::transpose(tempCameraIntrinsicH*tempCameraExtrinsic)" << std::endl;
-    utils::printMatrix( glm::transpose(tempCameraIntrinsicH*tempCameraExtrinsic));
-    std::cout << "tempCameraIntrinsicH*tempCameraExtrinsic" << std::endl;
-    utils::printMatrix( tempCameraIntrinsicH*tempCameraExtrinsic);*/
     tempCamera.cameraMatrix = glm::transpose(glm::transpose(tempCameraIntrinsicH) * glm::transpose(tempCameraExtrinsic));
-   /* std::cout << "tempCamera.cameraMatrix" << std::endl;
-    utils::printMatrix( tempCamera.cameraMatrix);*/
-
-   // utils::printMatrix(tempCamera.cameraMatrix);
-
+   
     tempCamera.center = - tempCamera.translation * glm::transpose(tempCamera.rotation);
 
     camerasList_.push_back(tempCamera);
   }
+
+  sfm_data_.camerasList_ = camerasList_;
+  for (int curCam = 0; curCam < sfm_data_.camerasList_.size(); curCam++) {
+    utilities::convertToMvp2(sfm_data_.camerasList_[curCam],sfm_data_.camerasList_[curCam].mvp);
+  }
+  sfm_data_.imageWidth_  = cv::imread(tempCamera.cameraPath).width;
+  sfm_data_.imageHeight_ = cv::imread(tempCamera.cameraPath).height;
+  sfm_data_.numCameras_  = sfm_data_.camerasList_.size();
+
 
   return true;
 }

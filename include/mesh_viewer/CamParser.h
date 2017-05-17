@@ -6,26 +6,26 @@
 #include <vector>
 #include <types.hpp>
 
+#include <OpenMvgParser.h>
+#include <MiddelburyParser.h>
+
 #include <glm.hpp>
 
 class CamParser {
   public:
     CamParser(std::string fileInput);
     virtual ~CamParser();
-    virtual bool parseFile()=0;
+    bool parseFile();
 
-    const std::vector<CameraType>& getCamerasList() const {
-      return camerasList_;
-    }
+    const SfMData& getSfmData() const {
+    return sfm_data_;
+  }
 
-    int getNumCameras() const {
-      return camerasList_.size();
-    }
 
   protected:
     std::string fileName_;
     std::ifstream fileStream_;
-    int numCameras_;
-    std::vector<CameraType> camerasList_;
+    SfMData sfm_data_;
+
 };
 #endif /* CAMPARSER_H_ */

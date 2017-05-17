@@ -12,24 +12,14 @@ struct CameraType {
     glm::mat3 rotation;
     glm::vec3 translation;
     glm::mat4 cameraMatrix;
-    //camera center
     glm::vec3 center;
+    std::string cameraPath;
 };
 
 
 struct SfMData {
-
-  int numPoints_;
   int numCameras_;
-
-  std::vector<glm::vec3> points_;
   std::vector<CameraType> camerasList_;
-  std::vector<std::string> camerasPaths_;
-
-  std::vector<std::vector<int> > camViewingPointN_;
-  std::vector<std::vector<int> > pointsVisibleFromCamN_;
-  std::vector<std::vector<glm::vec2> > point2DoncamViewingPoint_;
-
   int imageWidth_, imageHeight_;
 };
 

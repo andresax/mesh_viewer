@@ -288,37 +288,28 @@ void MeshViewer::resetVertexArrayBuffer() {
 
 
 
-glm::mat4 MeshViewer::setCameraParamAndGetMvp(const CameraType &cam) {
-  glm::mat3 r = cam.rotation;
-  /*r = glm::transpose(cam.rotation);
-  glm::vec3 t = - cam.center * (r);*/
- glm::vec3 t =  cam.translation;
-  cameraTransformationController_->setIntrinsicParameters(cam.intrinsics[0][0], cam.intrinsics[1][1], cam.intrinsics[0][2], cam.intrinsics[1][2]);
-  cameraTransformationController_->setExtrinsicParameters((r), t);
-  glm::mat4 mvp = cameraTransformationController_->getMvpMatrix();
-  return mvp;
-}
-
-
 
 void MeshViewer::initialize() {
 
   vertexBufferObj_  = imageElemBufferObj_ = -1;
   framebufferDepth_ = depthTexture_ = -1;
   reprojTex_ = -1;
-  imageHeight_ = 1200;
-  imageWidth_ = 1600;
+
+  ViewingDataParser vdp_;
+  vdp_.parseFile();
+  orderedViewingTriplets_ = vdp.getOrderedViewingTriplets();
+
 
   ///camParser_ = new CamParser("/home/andrea/workspaceC/MeshViewer/AlsoRenders/cam_poses.txt");std::string namecam
   camParser_ = new CamParser(namecam_.c_str());
   std::cout<<namecam_<<std::endl;
   camParser_->parseFile();
   std::cout<<"numcam "<<camParser_->getNumCameras()<<std::endl;
+  imageHeight_ = camParser_->getCamerasList().imageHeight_;
+  imageWidth_ = camParser_->getCamerasList().imageWidth_;
 
   depthProgram_ = new DepthShaderProgram(imageWidth_, imageHeight_);
   reprojProgram_ = new ReprojectionShaderProgram(imageWidth_, imageHeight_);
-  
-  cameraTransformationController_ = new TransformationController(static_cast<float>(imageWidth_), static_cast<float>(imageHeight_));
 
   init();
   createVertexArrayBuffer();
