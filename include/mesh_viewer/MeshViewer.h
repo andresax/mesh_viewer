@@ -20,7 +20,7 @@ public:
   virtual ~MeshViewer();
 
   void run();
-void restartWithNewMesh(const Mesh& mesh);
+  void restartWithNewMesh(const Mesh& mesh);
   //void simpleMeshUpdate();
 
 private:

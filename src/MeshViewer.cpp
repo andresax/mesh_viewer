@@ -137,6 +137,7 @@ void MeshViewer::resetVertexArrayBuffer() {
 
 void MeshViewer::initialize() {
 
+
   vertexBufferObj_  = imageElemBufferObj_ = -1;
   framebufferDepth_ = depthTexture_ = -1;
   reprojTex_ = -1;
@@ -151,10 +152,16 @@ void MeshViewer::initialize() {
   imageHeight_ = camParser_->getSfmData().imageHeight_;
   imageWidth_ = camParser_->getSfmData().imageWidth_;
 
-  depthProgram_ = new DepthShaderProgram(imageWidth_, imageHeight_);
-  reprojProgram_ = new ReprojectionShaderProgram(imageWidth_, imageHeight_);
+    std::cout<<"imageHeight_ " << imageHeight_ <<std::endl;
+    std::cout<<"imageWidth_ " << imageWidth_ <<std::endl;
+
 
   init();
   createVertexArrayBuffer();
   initShaders();
+
+
+  depthProgram_ = new DepthShaderProgram(imageWidth_, imageHeight_);
+  reprojProgram_ = new ReprojectionShaderProgram(imageWidth_, imageHeight_);
+
 }

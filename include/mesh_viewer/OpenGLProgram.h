@@ -1,10 +1,3 @@
-/*
- * OpenGLProgram.h
- *
- *  Created on: 01/apr/2015
- *      Author: andrea
- */
-
 #ifndef OPENGLWRAPPER_OPENGLPROGRAM_H_
 #define OPENGLWRAPPER_OPENGLPROGRAM_H_
 

@@ -13,11 +13,11 @@ CamParser::~CamParser() {
 
 bool CamParser::parseFile()
 {
-    if (fileName_.substr(fileName_.size()-9,8).compare("_par.txt")==0){
+    if (fileName_.substr(fileName_.size()-8,8).compare("_par.txt")==0){
         MiddelburyParser mp(fileName_);
         mp.parse();
         sfm_data_ = mp.getSfmData();
-    }else if(fileName_.substr(fileName_.size()-5,4).compare("json")==0){
+    }else if(fileName_.substr(fileName_.size()-4,4).compare("json")==0){
         OpenMvgParser omvg(fileName_);
         omvg.parse();
         sfm_data_ = omvg.getSfmData();

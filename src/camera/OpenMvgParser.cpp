@@ -113,6 +113,11 @@ void OpenMvgParser::parseViews(const std::map<int, glm::mat3> & intrinsics, cons
         std::cerr << "std::out_of_range exception trying to look for extrinsics matrix " << idExtrinsics << std::endl;
       }
     }
+
+    
+  sfm_data_.imageWidth_  = sfm_data_.camerasList_[0].imageWidth;
+  sfm_data_.imageHeight_ = sfm_data_.camerasList_[0].imageHeight;
+  sfm_data_.numCameras_  = sfm_data_.camerasList_.size();
   } catch (JsonAccessException& e) {
     std::cerr << e.what() << std::endl;
     std::cout << e.what() << std::endl;
