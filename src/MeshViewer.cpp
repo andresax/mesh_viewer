@@ -27,7 +27,7 @@ void MeshViewer::run() {
 int countframe=0;
   for (auto curTriplet: orderedViewingTriplets_){
  
-    if(curTriplet.meshPath.compare("")!=0){//the string is not void
+    if(curTriplet.meshPath.compare("") != 0){//the string is not void
       mesh_.loadFormat(curTriplet.meshPath.c_str(), false);
       resetMeshInfo();
     }
@@ -152,15 +152,11 @@ void MeshViewer::initialize() {
   imageHeight_ = camParser_->getSfmData().imageHeight_;
   imageWidth_ = camParser_->getSfmData().imageWidth_;
 
+  depthProgram_ = new DepthShaderProgram(imageWidth_, imageHeight_);
+  reprojProgram_ = new ReprojectionShaderProgram(imageWidth_, imageHeight_);
 
   init();
   createVertexArrayBuffer();
   initShaders();
-
-    std::cout<<"createVertexArrayBuffer "  <<std::endl;
-
-  depthProgram_ = new DepthShaderProgram(imageWidth_, imageHeight_);
-  reprojProgram_ = new ReprojectionShaderProgram(imageWidth_, imageHeight_);
-    std::cout<<"ReprojectionShaderProgram "  <<std::endl;
 
 }

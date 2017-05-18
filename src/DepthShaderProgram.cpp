@@ -15,6 +15,7 @@ DepthShaderProgram::DepthShaderProgram(int imageWidth, int imageHeight) :
     ShaderProgram(imageWidth, imageHeight) {
   posAttribDepthId_ = -1;
   mvpId_  = -1;
+
 }
 
 DepthShaderProgram::~DepthShaderProgram() {
@@ -61,10 +62,12 @@ void DepthShaderProgram::computeDepthMap(const GLuint &framebufferDepth, const g
 }
 
 void DepthShaderProgram::init() {
+  
   shaderManager_.init();
   shaderManager_.addShader(GL_VERTEX_SHADER, "shaders/depth_vertex_shader.glsl");
   shaderManager_.addShader(GL_FRAGMENT_SHADER, "shaders/depth_fragment_shader.glsl");
   shaderManager_.finalize();
+
 }
 
 void DepthShaderProgram::createAttributes() {
