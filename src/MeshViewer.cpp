@@ -152,16 +152,15 @@ void MeshViewer::initialize() {
   imageHeight_ = camParser_->getSfmData().imageHeight_;
   imageWidth_ = camParser_->getSfmData().imageWidth_;
 
-    std::cout<<"imageHeight_ " << imageHeight_ <<std::endl;
-    std::cout<<"imageWidth_ " << imageWidth_ <<std::endl;
-
 
   init();
   createVertexArrayBuffer();
   initShaders();
 
+    std::cout<<"createVertexArrayBuffer "  <<std::endl;
 
   depthProgram_ = new DepthShaderProgram(imageWidth_, imageHeight_);
   reprojProgram_ = new ReprojectionShaderProgram(imageWidth_, imageHeight_);
+    std::cout<<"ReprojectionShaderProgram "  <<std::endl;
 
 }
