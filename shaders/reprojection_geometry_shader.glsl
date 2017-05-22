@@ -6,11 +6,13 @@ layout (triangle_strip, max_vertices=3) out;
 in vec3 positionPointV[];       /*3D point position*/
 in vec4 projectorTexCoordV[];  
 in vec4 shadowCoord1V[];
+in vec4 colorV[];
 
 out vec3 normal;
 out vec4 projectorTexCoord;  
 out vec4 shadowCoord1;         
-out vec3 posV;
+out vec3 posV;    
+out vec4 color;
 
 void main(){
   
@@ -20,7 +22,7 @@ void main(){
     posV = positionPointV[i];
     projectorTexCoord = projectorTexCoordV[i];
     shadowCoord1 = shadowCoord1V[i];
-    
+    color = colorV[i];
     gl_Position = gl_in[i].gl_Position;
 
     EmitVertex();

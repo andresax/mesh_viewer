@@ -32,6 +32,9 @@ private:
   void refreshVertexArrayBuffer();
   glm::mat4 setCameraParamAndGetMvp(const CameraType &cam);
   void resetMeshInfo();
+  void loadMesh(std::string path);
+
+Polyhedronmy ptoot;
   
   Mesh mesh_;
   std::vector<cv::Mat> images_;
@@ -47,6 +50,7 @@ private:
   GLuint framebufferDepth_;
   GLuint depthTexture_;
   GLuint reprojTex_;
+  GLuint vertexBufferObjGrad_;
 
   std::vector<ViewingTriplet> orderedViewingTriplets_;
 };

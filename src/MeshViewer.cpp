@@ -9,6 +9,7 @@
 #include <sstream>
 #include <Configurator.h>
 #include <glm.hpp>
+#include <Polyhedron_scan_COFF.h>
 
 
 MeshViewer::MeshViewer( std::string namecam) {
@@ -28,7 +29,8 @@ int countframe=0;
   for (auto curTriplet: orderedViewingTriplets_){
  
     if(curTriplet.meshPath.compare("") != 0){//the string is not void
-      mesh_.loadFormat(curTriplet.meshPath.c_str(), false);
+      //mesh_.loadFormat(curTriplet.meshPath.c_str(), false);
+      loadMesh(curTriplet.meshPath);
       resetMeshInfo();
     }
 
@@ -44,17 +46,19 @@ int countframe=0;
     }
 
     //************************depth************************
-    depthProgram_->setArrayBufferObj(vertexBufferObj_, mesh_.p.size_of_facets() * 3);
+    depthProgram_->setArrayBufferObj(vertexBufferObj_, ptoot.size_of_facets() * 3);
     depthProgram_->setUseElementsIndices(false);
     static_cast<DepthShaderProgram *>(depthProgram_)->computeDepthMap(framebufferDepth_, mvp);
     glFinish();
 
     //************************reprojection**************************
-    reprojProgram_->setArrayBufferObj(vertexBufferObj_, mesh_.p.size_of_facets() * 3);
+    reprojProgram_->setArrayBufferObj(vertexBufferObj_, ptoot.size_of_facets() * 3);
     reprojProgram_->setUseElementsIndices(false);
     static_cast<ReprojectionShaderProgram *>(reprojProgram_)->setCamCenter(curCenter);
     static_cast<ReprojectionShaderProgram *>(reprojProgram_)->setDepthTexture(depthTexture_);
     static_cast<ReprojectionShaderProgram *>(reprojProgram_)->setMvp(mvp);
+    static_cast<ReprojectionShaderProgram *>(reprojProgram_)->setVertexArrayObj(vertexArrayObj_);
+    static_cast<ReprojectionShaderProgram *>(reprojProgram_)->setVertexArrayGradObj(vertexBufferObjGrad_);
     //reprojProgram_->populateTex(image);
     reprojProgram_->compute(false);
     glFinish();
@@ -73,13 +77,48 @@ int countframe=0;
 }
 
 
-void MeshViewer::restartWithNewMesh(const Mesh& mesh) {
+void MeshViewer::loadMesh(std::string path) {
 
-  mesh_.clear();
-  mesh_ = mesh;
+std::cout << "MeshViewer::loadMesh"<< std::flush;
+  std::ifstream f(path);
+  Polyhedronmy p;
+
+  Polyhedron_scan_COFF scanner(f);
+  ptoot.delegate(scanner);
+
+  int countR = 0, countG = 0, countB = 0, count = 0;
+  for (Facet_iteratormy facet = ptoot.facets_begin(); facet != ptoot.facets_end(); facet++) {
+    if (facet->color == CGAL::RED) {
+      countR++;
+      facet->label.set_label(classLabel::GROUND);
+    } else if (facet->color == CGAL::GREEN) {
+      facet->label.set_label(classLabel::CAR);
+      countG++;
+    } else if (facet->color == CGAL::BLUE) {
+      facet->label.set_label(classLabel::WALL);
+      countB++;
+    } else {
+      facet->label.set_label(classLabel::UNDEFINED);
+      count++;
+    }
+
+  }
+
+ // mesh_.loadAsTriangleSoup(path.c_str());
+  //curToBeRefined.loadFormat("/home/andrea/workspaceC/semanticMeshReconstruction/cubeNewOpt_noColor.off", false);
+
+ /* Facet_iteratormy f1 = p.facets_begin();
+  for (Facet_iterator f = mesh_.p.facets_begin(); f != mesh_.p.facets_end() && f1 != p.facets_end(); f++, f1++) {
+    f->id = static_cast<int>(f1->label.l());
+  }
+*/
+std::cout << " DONE"<< std::endl;
+}
+/*void MeshViewer::restartWithNewMesh(const Mesh& mesh) {
+
   resetMeshInfo();
 }
-
+*/
 void MeshViewer::initShaders() {
   //************************depth********************************
   std::cout << "DepthShaderProgram init...";
@@ -97,14 +136,12 @@ void MeshViewer::initShaders() {
 
 void MeshViewer::createVertexArrayBuffer() {
   glGenBuffers(1, &vertexBufferObj_);
+  glGenBuffers(1, &vertexBufferObjGrad_);
   resetVertexArrayBuffer();
 
 }
 
 void MeshViewer::resetMeshInfo() {
-
-  mesh_.updateMeshData(false, false);
-  mesh_.resetSimplexIndices();
 
   resetVertexArrayBuffer();
 }
@@ -113,13 +150,13 @@ void MeshViewer::resetVertexArrayBuffer() {
   glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObj_);
   std::vector<glm::vec3> verticesUnwrapped;
 
-  for (Facet_iterator itFac = mesh_.p.facets_begin(); itFac != mesh_.p.facets_end(); itFac++) {
-    Halfedge_handle h0, h1, h2;
+  for (Facet_iteratormy itFac = ptoot.facets_begin(); itFac != ptoot.facets_end(); itFac++) {
+    Halfedge_handlemy h0, h1, h2;
     h0 = itFac->halfedge();
     h1 = h0->next();
     h2 = h1->next();
 
-    Vertex_handle v0, v1, v2;
+    Vertex_handlemy v0, v1, v2;
     v0 = h0->vertex();
     v1 = h1->vertex();
     v2 = h2->vertex();
@@ -128,8 +165,21 @@ void MeshViewer::resetVertexArrayBuffer() {
     verticesUnwrapped.push_back(glm::vec3(v1->point().x(), v1->point().y(), v1->point().z()));
     verticesUnwrapped.push_back(glm::vec3(v2->point().x(), v2->point().y(), v2->point().z()));
   }
+  glBufferData(GL_ARRAY_BUFFER, 3 * ptoot.size_of_facets() * sizeof(glm::vec3), &verticesUnwrapped[0], GL_STATIC_DRAW);
 
-  glBufferData(GL_ARRAY_BUFFER, 3 * mesh_.p.size_of_facets() * sizeof(glm::vec3), &verticesUnwrapped[0], GL_STATIC_DRAW);
+  std::vector<glm::vec4> verticesUnwrapped2;
+  glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjGrad_);
+  for (Facet_iteratormy itFac = ptoot.facets_begin(); itFac != ptoot.facets_end(); itFac++) {
+    verticesUnwrapped2.push_back(glm::vec4(itFac->color.r(), itFac->color.g(), itFac->color.b(), 1.0));
+    verticesUnwrapped2.push_back(glm::vec4(itFac->color.r(), itFac->color.g(), itFac->color.b(), 1.0));
+    verticesUnwrapped2.push_back(glm::vec4(itFac->color.r(), itFac->color.g(), itFac->color.b(), 1.0));
+  }
+  glBufferData(GL_ARRAY_BUFFER, verticesUnwrapped2.size() * sizeof(glm::vec4), &verticesUnwrapped2[0], GL_DYNAMIC_DRAW);
+
+
+  std::cout<<"MeshViewer::resetVertexArrayBuffer"<<std::endl;
+  std::cout<<"verticesUnwrapped.size()="<<verticesUnwrapped.size()<<std::endl;
+  std::cout<<"verticesUnwrapped2.size()="<<verticesUnwrapped2.size()<<std::endl;
 }
 
 

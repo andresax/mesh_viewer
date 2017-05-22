@@ -4,6 +4,7 @@ in vec4 projectorTexCoord;
 in vec4 shadowCoord1;
 in vec3 normal;
 in vec3 posV;
+in vec4 color;
 
 layout (location=0) out vec3 reproj;
 
@@ -22,10 +23,12 @@ void main(){
   float cosTheta2 = abs(dot(-n, l));
   //illumination ambient + diffuse + specular
   vec3 ambient = vec3(0.05);
-  //vec3 diffuse = vec3(imageReproj.x, imageReproj.y, imageReproj.z)* max(cosTheta, cosTheta2);
+ // vec3 diffuse = color.xyz * max(cosTheta, cosTheta2);
   vec3 diffuse = vec3(1.0, 1.0, 1.0)* max(cosTheta, cosTheta2);
   vec3 specular = vec3(0.0);
 
    
   reproj = shadowCoeff  * vec3(ambient+diffuse+specular ); 
+   
+  reproj = shadowCoeff  * color.xyz; 
 }

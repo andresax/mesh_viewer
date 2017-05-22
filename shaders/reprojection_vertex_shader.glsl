@@ -1,10 +1,12 @@
 #version 420
 
-in vec3 position;
+layout(location = 0) in vec3 position;  
+layout(location = 1) in vec4 infoSurface;    
 
 out vec3 positionPointV;
 out vec4 projectorTexCoordV;  
-out vec4 shadowCoord1V;         
+out vec4 shadowCoord1V; 
+out vec4 colorV;         
 
 uniform mat4 MVP;
 
@@ -26,5 +28,6 @@ void main(){
 
   positionPointV = position;
   gl_Position =  MVP * vec4(position,1.0);
+  colorV = infoSurface;
 }
 

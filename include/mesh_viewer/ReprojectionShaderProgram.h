@@ -33,6 +33,13 @@ public:
   void setCamCenter(const glm::vec3& camCenter) {
     camCenter_ = camCenter;
   }
+
+  void setVertexArrayObj(GLuint vertexArrayObj) {
+    vertexArrayObj_ = vertexArrayObj;
+  }
+  void setVertexArrayGradObj(GLuint arrayPlusBufferObj) {
+    arrayPlusBufferObj_ = arrayPlusBufferObj;
+  }
 private:
   void init();
 
@@ -43,7 +50,7 @@ private:
   GLuint imageReprojTex_;
   GLuint imageTex_;
 
-  GLuint posAttribReprojId_, mvpIDReproj_, imageTexId_, shadowMapIdReproj_;
+  GLuint posAttribReprojId_, mvpIDReproj_, imageTexId_, shadowMapIdReproj_,vertexArrayObj_,arrayPlusBufferObj_,normalAttribsimGradId_;
 
   GLuint depthTexture_, camCenterID_;
   glm::vec3 camCenter_;

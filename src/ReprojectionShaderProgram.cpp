@@ -5,10 +5,10 @@
  *      Author: andrea
  */
 
-#include "ReprojectionShaderProgram.h"
+#include <ReprojectionShaderProgram.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include "utilities.hpp"
+#include <utilities.hpp>
 
 ReprojectionShaderProgram::ReprojectionShaderProgram(int imageWidth, int imageHeight) :
     ShaderProgram(imageWidth, imageHeight) {
@@ -65,17 +65,20 @@ void ReprojectionShaderProgram::compute(bool renderFrameBuf) {
   glBindTexture(GL_TEXTURE_2D, imageTex_);
   glUniform1i(imageTexId_, 1);
 
-  glEnableVertexAttribArray(posAttribReprojId_);
+  glBindVertexArray(vertexArrayObj_);
   glBindBuffer(GL_ARRAY_BUFFER, arrayBufferObj_);
   glVertexAttribPointer(posAttribReprojId_, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-  if (useElements_Indices) {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementsBufferObj_);
-    glDrawElements(GL_TRIANGLES, numElements_, GL_UNSIGNED_INT, 0);
-  } else {
-    glBindBuffer(GL_ARRAY_BUFFER, arrayBufferObj_);
-    glDrawArrays(GL_TRIANGLES, 0, sizeArray_);
-  }
+  glBindBuffer(GL_ARRAY_BUFFER, arrayPlusBufferObj_);
+  glVertexAttribPointer(normalAttribsimGradId_, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+  glEnableVertexAttribArray(posAttribReprojId_);
+  glEnableVertexAttribArray(normalAttribsimGradId_);
+
+  glBindVertexArray(vertexArrayObj_);
+  glDrawArrays(GL_TRIANGLES, 0, sizeArray_);
+
+  glDisableVertexAttribArray(normalAttribsimGradId_);
 
   glDisableVertexAttribArray(posAttribReprojId_);
 
@@ -104,6 +107,7 @@ void ReprojectionShaderProgram::init() {
 
 void ReprojectionShaderProgram::createAttributes() {
   posAttribReprojId_ = shaderManager_.getAttribLocation("position");
+  normalAttribsimGradId_ = shaderManager_.getAttribLocation("infoSurface");
 }
 
 void ReprojectionShaderProgram::createUniforms() {
