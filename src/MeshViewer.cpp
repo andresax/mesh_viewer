@@ -67,11 +67,11 @@ int countframe=0;
     SwapBuffers();    
 
     std::stringstream ss;
-    ss<<"render_"<<c.pathOutDir_<<utilities::getFrameNumber(countframe,6)<<".png";
+    ss<<c.pathOutDir_<<utilities::getFrameNumber(countframe,6)<<".png";
     cv::imwrite(ss.str().c_str(),capture);
 
-      std::cout << "Iteration num. " << countframe << " done!" << std::endl;
-      countframe++;
+    std::cout << "Iteration num. " << countframe << " done!  Image saved in " << ss.str()<< std::endl;
+    countframe++;
   }
   image.release();
 }
