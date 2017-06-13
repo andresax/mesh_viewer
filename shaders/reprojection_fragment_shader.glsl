@@ -24,11 +24,11 @@ void main(){
   //illumination ambient + diffuse + specular
   vec3 ambient = vec3(0.05);
  // vec3 diffuse = color.xyz * max(cosTheta, cosTheta2);
-  vec3 diffuse = vec3(1.0, 1.0, 1.0)* max(cosTheta, cosTheta2);
+  vec3 diffuse = vec3(1.0, 1.0, 1.0)* max(cosTheta, cosTheta2)*imageReproj.xyz;
   vec3 specular = vec3(0.0);
 
    
   reproj = shadowCoeff  * vec3(ambient+diffuse+specular ); 
    
-  reproj = shadowCoeff  * color.xyz; 
+  //reproj = shadowCoeff  * color.xyz; 
 }

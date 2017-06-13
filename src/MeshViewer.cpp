@@ -41,7 +41,7 @@ int countframe=0;
 
     cv::Mat curImage;
 
-    if(curTriplet.imageId==-1){
+    if(curTriplet.imageId!=-1){
       curImage = cv::imread(camParser_->getSfmData().camerasList_[curTriplet.imageId].cameraPath);
     }
 
@@ -59,7 +59,7 @@ int countframe=0;
     static_cast<ReprojectionShaderProgram *>(reprojProgram_)->setMvp(mvp);
     static_cast<ReprojectionShaderProgram *>(reprojProgram_)->setVertexArrayObj(vertexArrayObj_);
     static_cast<ReprojectionShaderProgram *>(reprojProgram_)->setVertexArrayGradObj(vertexBufferObjGrad_);
-    //reprojProgram_->populateTex(image);
+    reprojProgram_->populateTex(curImage);
     reprojProgram_->compute(false);
     glFinish();
     cv::Mat capture;
@@ -103,15 +103,17 @@ std::cout << "MeshViewer::loadMesh"<< std::flush;
     }
 
   }
-
- // mesh_.loadAsTriangleSoup(path.c_str());
-  //curToBeRefined.loadFormat("/home/andrea/workspaceC/semanticMeshReconstruction/cubeNewOpt_noColor.off", false);
-
- /* Facet_iteratormy f1 = p.facets_begin();
+   Facet_iteratormy f1 = p.facets_begin();
   for (Facet_iterator f = mesh_.p.facets_begin(); f != mesh_.p.facets_end() && f1 != p.facets_end(); f++, f1++) {
     f->id = static_cast<int>(f1->label.l());
   }
-*/
+
+
+ // mesh_.loadAsTriangleSoup(path.c_str());
+ // ptoot.loadFormat(path.c_str(), false);
+
+ 
+
 std::cout << " DONE"<< std::endl;
 }
 /*void MeshViewer::restartWithNewMesh(const Mesh& mesh) {

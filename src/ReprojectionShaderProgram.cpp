@@ -29,12 +29,8 @@ void ReprojectionShaderProgram::initTex() {
 
 void ReprojectionShaderProgram::populateTex(const cv::Mat& image) {
 
-  cv::Mat image2Gray;
-  cv::cvtColor(image, image2Gray, CV_RGB2GRAY);
   glBindTexture(GL_TEXTURE_2D, imageTex_);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, imageWidth_, imageHeight_, 0, GL_RED, GL_UNSIGNED_BYTE, image2Gray.data);
-
-  image2Gray.release();
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth_, imageHeight_, 0, GL_RGB, GL_UNSIGNED_BYTE, image.data);
 }
 
 void ReprojectionShaderProgram::compute(bool renderFrameBuf) {
